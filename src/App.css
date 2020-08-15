@@ -1,0 +1,157 @@
+.tag1{
+  display: inline-block;
+  color: blue;
+  margin: 0;
+}
+.tag2{
+  float: right;
+  color: grey;
+  margin: 0;
+}
+.tag3{
+  display: inline-block;
+  margin: 0;
+  float: none;
+}
+
+.tag3 h3{
+  color: blue;
+  margin: 0;
+}
+#hr1{
+    border: none;
+    height: 2px;
+    color: #333; 
+    background-color: #333;
+}
+.tag4 label{
+    display: inline;
+    float: left;
+    clear: left;
+    width: 250px;
+    text-align: right;
+    margin: 0;
+}
+input {
+  display:inline;
+  margin: 0;
+}
+.tag4{
+  display: inline-block;
+  float: right;
+  color: grey;
+}
+.tag04{
+  margin-left: 187px;
+  margin-bottom: 0;
+}
+.myTable{
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+  width:100%;
+}
+label{
+   display: inline;
+    float: left;
+    clear: left;
+    width: 250px;
+    text-align: right;
+    margin: 0;
+} 
+.Add input{
+  width:50%;
+  border-radius: 5px;
+  padding: 8px;
+  border-color: grey;
+}
+.Add button{
+  margin-left: 250px;
+}
+.showForm{
+  background-color: grey;
+  font-size: medium;
+  color:blue;
+  border-radius: 3px;
+  padding:10px;
+  width: fit-content;
+}
+#btn{
+  background-color: grey;
+  color:blue;
+  border-radius:2px;
+  padding:5px;
+  width: 50px;
+}
+.tableValues{
+
+  margin-left: 68%;
+}
+.tableValues td{
+  border:none;
+}
+.tableClass{
+  table-layout: fixed;
+  overflow: hidden; 
+  margin-left: auto;
+  margin-right: auto;
+}
+.tableClass, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+  text-align: left;
+  overflow: hidden; 
+}
+
+.t1{
+width: 10%;
+}
+.t2{
+width: 25%;
+}
+.tableValues { width:250px;table-layout:fixed; }
+.tableValues td { overflow:hidden;white-space:nowrap;  } 
+.subTableRight{
+  text-align: center;
+  width: 40px;
+}
+
+
+.App{
+  margin-left: 10%;
+  margin-right: 10%;
+}
+.subTableLeft{
+  float: right;
+}
+
+.error{
+ margin-left: 50%;
+ margin-right: 50%;
+ margin-top: 0%;
+ margin-bottom: 0%;
+}
+.btn{
+ background-color: grey;
+  color:blue;
+  font-size: medium;
+  border-radius:5px;
+  padding:5px;
+  width: 75px;
+}
+.closeBtn{
+ background-color: grey;
+  color:blue;
+  font-size: medium;
+  border-radius:5px;
+  padding:5px;
+  width: 75px;
+}
+.removeEntry{
+  float: right;
+}
+
+
