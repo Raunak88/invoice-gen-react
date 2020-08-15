@@ -1,11 +1,13 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Text from "./Text/Text";
+import TableAndForm from "./TableAndForm/TableAndForm";
 
 function App() {
   return (
     <div className="App">
-     Invoice app
+      <Text/>
+      <TableAndForm />
     </div>
   );
 }
