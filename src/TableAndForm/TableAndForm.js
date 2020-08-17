@@ -16,7 +16,15 @@ const initialState = {
       hours: "120",
     },
   ],
-  privileged:false,
+  formValues:{
+    title: "",
+    description: "",
+    rate: "",
+    hours: "",
+  },
+  privileged: false,
+  currency: "INR",
+  taskFormOpen: false,
 };
 
 class TableAndForm extends Component {
@@ -25,35 +33,68 @@ class TableAndForm extends Component {
 
     this.state = initialState;
     this.handleChange.bind(this);
+    this.checkHandler.bind(this);
+    this.openTaskForm.bind(this);
+    this.closeTaskForm.bind(this);
+
   }
 
   // write your event handlers and lifecycle methods in here
 
-  handleChange=(event)=>{
-    const value = event.target.value;    
-    const name = event.target.name;
+  handleChange = (event) => {
+    const value = event.target.value;
+    const name = event.target.name; 
+    this.setState(prevState=>{
+      return {formValues:{
+        [name]:value
+      }}
+    })   
+  };
+  checkHandler = () => {
+    this.setState((prevState) => {
+      return { privileged: !prevState.privileged };
+    });
+  };
+
+  selectHandler = (event) => {
     this.setState({
-      [name]: value
+      currency: event.target.value,
+    });
+  };
+
+  openTaskForm = () => {
+    this.setState({
+      taskFormOpen:true ,
+    });
+  };
+  closeTaskForm = () => {
+    this.setState({
+      taskFormOpen:false ,
+    });
+  };
+
+  handleSubmit=()=>{
+    let newEntries = this.state.entries.push(this.state.formValues)
+    this.setState({
+      entries:newEntries
     })
   }
-checkHandler=()=>{
-    this.setState(prevState=>{         
-        
-    })
-}
-
-
-
   render() {
     //entries is an array, which you are gonna use...
     let entries = this.state.entries;
-    let subTotal=this.state.entries.reduce((acc,current)=>{
-        return acc+current.hours*current.rate;
-    },0)
-    let discount=this.state.privileged?7:2;
+    var subTotal = this.state.entries.reduce((acc, current) => {
+      return acc + current.hours * current.rate;
+    }, 0);
+    let discount = this.state.privileged ? 7 : 2;
     let taxes = 18;
-    let deposit=400;
-    let total=Math.round(subTotal-(discount/100*subTotal)+(taxes/100*subTotal)-deposit);
+    let deposit = 400;
+    let total = Math.round(
+      subTotal -
+        (discount / 100) * subTotal +
+        (taxes / 100) * subTotal -
+        deposit
+    );
+    console.log(this.state);
 
     return (
       <div>
@@ -69,7 +110,12 @@ checkHandler=()=>{
           </p>
           {/* checkbox.. when user check the checkBox the discount should change as per instructions */}
           Previleged:
-          <input type="checkbox" id="checkHandler" className="checkHandler" onChange={this.checkHandler}/>
+          <input
+            type="checkbox"
+            id="checkHandler"
+            className="checkHandler"
+            onChange={this.checkHandler}
+          />
         </div>
         <div className="tag4">
           <p className="tag04">
@@ -78,8 +124,11 @@ checkHandler=()=>{
           </p>
 
           <label htmlFor="currency">Currency:</label>
-          <select id="currency">
+          <select id="currency" onChange={this.selectHandler}>
             {/* write the options required. On selecting an option it should display where ever it's required */}
+            <option value="(INR)">INDIA(INR)</option>
+            <option value="(USD)">USA(USD)</option>
+            <option value="(EURO)">EUPROPE(EURO)</option>
           </select>
         </div>
         <hr />
@@ -95,28 +144,29 @@ checkHandler=()=>{
               <td>Amount</td>
             </thead>
             <tbody>
-                {this.state.entries.map((entry,index)=>{
-                    return(<tr>
-                         <td>{index+1}</td>
-                         <td>{entry.title}</td>
-                         <td>{entry.description}</td>
-                         <td>{entry.rate}</td>
-                         <td>{entry.hours}</td>
-                         <td>{entry.rate*entry.hours}<button onClick={this.deleteTask}>X</button></td>
-                    </tr>)
-                   
-                })}
+              {this.state.entries.map((entry, index) => {
+                return (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td>{entry.title}</td>
+                    <td>{entry.description}</td>
+                    <td>{entry.rate}</td>
+                    <td>{entry.hours}</td>
+                    <td>
+                      {entry.rate * entry.hours}
+                      <button onClick={this.deleteTask}>X</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
-
-
           </table>
           {/* fill in the below table which is the second table for invoice calculations */}
           <table className="tableValues">
             <tbody>
               <tr className="subTable1">
                 <td className="subTableLeft">Subtotal</td>
-                <td className="subTableRight">{subTotal}             
-                </td>
+                <td className="subTableRight">{subTotal}</td>
               </tr>
             </tbody>
             <tbody>
@@ -133,13 +183,13 @@ checkHandler=()=>{
             </tbody>
             <tbody>
               <tr className="subTable4">
-                <td className="subTableLeft">Deposit(INR)</td>
+                <td className="subTableLeft">Deposit {this.state.currency}</td>
                 <td className="subTableRight">{deposit}</td>
               </tr>
             </tbody>
             <tbody>
               <tr className="subTable5">
-                <td className="subTableLeft">Total</td>
+                <td className="subTableLeft">Total {this.state.currency}</td>
                 <td className="subTableRight">{total}</td>
               </tr>
             </tbody>
@@ -147,42 +197,70 @@ checkHandler=()=>{
         </fieldset>
 
         <br />
-        <button className="showForm" id="showForm">
+        <button
+          className="showForm"
+          id="showForm"
+          onClick={this.openTaskForm}
+        >
           Add new task
         </button>
         <br />
         <br />
 
         {/* fill in the form which should display on clicking the 'Add new Task' button */}
-        <div className="Add" id="addForm">
-          <form className="myform" id="myForm" ref="myform">
-            <fieldset className="field">
-              <label>Title:</label>
-              <input type="text" className="title" value={this.state.title} onChange={this.handleChange}/>
-              <p className="error"></p>
-              <br />
-              <label>Description:</label>
-              <input type="text" className="description" value={this.state.description}  onChange={this.handleChange}/>
-              <p className="error"></p>
-              <br />
-              <label>Rate:</label>
-              <input type="number" className="rate" value={this.state.rate} onChange={this.handleChange}/>
-              <p className="error"></p>
-              <br />
-              <label>Hours:</label>
-              <input type="number" className="hours" value={this.state.hours} onChange={this.handleChange} />
-              <p className="error"></p>
-              <br />
-              <br />
-              <button type="submit" className="btn">
-                Add
-              </button>
-              <button type="submit" className="closeBtn">
-                Close
-              </button>
-            </fieldset>
-          </form>
-        </div>
+        {this.state.taskFormOpen ? (
+          <div className="Add" id="addForm">
+            <form className="myform" id="myForm" ref="myform">
+              <fieldset className="field">
+                <label>Title:</label>
+                <input
+                  type="text"
+                  className="title"
+                  value={this.state.title}
+                  onChange={this.handleChange}
+                />
+                <p className="error"></p>
+                <br />
+                <label>Description:</label>
+                <input
+                  type="text"
+                  className="description"
+                  value={this.state.description}
+                  onChange={this.handleChange}
+                />
+                <p className="error"></p>
+                <br />
+                <label>Rate:</label>
+                <input
+                  type="number"
+                  className="rate"
+                  value={this.state.rate}
+                  onChange={this.handleChange}
+                />
+                <p className="error"></p>
+                <br />
+                <label>Hours:</label>
+                <input
+                  type="number"
+                  className="hours"
+                  value={this.state.hours}
+                  onChange={this.handleChange}
+                />
+                <p className="error"></p>
+                <br />
+                <br />
+                <button type="submit" className="btn">
+                  Add
+                </button>
+                <button type="submit" className="closeBtn" onClick={this.closeTaskForm}>
+                  Close
+                </button>
+              </fieldset>
+            </form>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     );
   }
