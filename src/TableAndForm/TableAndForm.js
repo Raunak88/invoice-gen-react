@@ -16,7 +16,7 @@ const initialState = {
       hours: "120",
     },
   ],
-  formValues:{
+  formValues: {
     title: "",
     description: "",
     rate: "",
@@ -36,20 +36,30 @@ class TableAndForm extends Component {
     this.checkHandler.bind(this);
     this.openTaskForm.bind(this);
     this.closeTaskForm.bind(this);
-
   }
 
   // write your event handlers and lifecycle methods in here
 
   handleChange = (event) => {
     const value = event.target.value;
-    const name = event.target.name; 
-    this.setState(prevState=>{
-      return {formValues:{
-        [name]:value
-      }}
-    })   
+    const name = event.target.name;
+    this.setState((prevState) => {
+      return {
+        formValues: {
+          ...this.state.formValues,
+          [name]: value,
+        },
+      };
+    });
+    console.log(this.state)
   };
+
+  deleteTask=(indexToRemove)=>{
+    let entriesAfterDeletion = [...this.state.entries.slice(0, indexToRemove), ...this.state.entries.slice(indexToRemove + 1)]
+    this.setState({
+      entries:entriesAfterDeletion
+    })
+  }
   checkHandler = () => {
     this.setState((prevState) => {
       return { privileged: !prevState.privileged };
@@ -64,25 +74,28 @@ class TableAndForm extends Component {
 
   openTaskForm = () => {
     this.setState({
-      taskFormOpen:true ,
+      taskFormOpen: true,
     });
   };
   closeTaskForm = () => {
     this.setState({
-      taskFormOpen:false ,
+      taskFormOpen: false,
     });
   };
 
-  handleSubmit=()=>{
-    let newEntries = this.state.entries.push(this.state.formValues)
+  handleSubmit = (e) => {
+    e.preventDefault()
+    let newEntries = [...this.state.entries, this.state.formValues]
     this.setState({
-      entries:newEntries
-    })
-  }
+      entries: newEntries,
+      formValues:initialState.formValues
+    });
+    console.log(this.state);
+  };
   render() {
     //entries is an array, which you are gonna use...
     let entries = this.state.entries;
-    var subTotal = this.state.entries.reduce((acc, current) => {
+    var subTotal = entries.reduce((acc, current) => {
       return acc + current.hours * current.rate;
     }, 0);
     let discount = this.state.privileged ? 7 : 2;
@@ -94,7 +107,6 @@ class TableAndForm extends Component {
         (taxes / 100) * subTotal -
         deposit
     );
-    console.log(this.state);
 
     return (
       <div>
@@ -136,17 +148,19 @@ class TableAndForm extends Component {
           <table className="tableClass">
             {/* write code for adding the new rows into the table */}
             <thead>
-              <td>S.No</td>
-              <td>Item</td>
-              <td>Task</td>
-              <td>Hours</td>
-              <td>Rate</td>
-              <td>Amount</td>
+              <tr>
+              <th>S.No</th>
+              <th>Item</th>
+              <th>Task</th>
+              <th>Hours</th>
+              <th>Rate</th>
+              <th>Amount</th>
+              </tr>
             </thead>
             <tbody>
-              {this.state.entries.map((entry, index) => {
+              {entries.map((entry, index) => {
                 return (
-                  <tr>
+                  <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{entry.title}</td>
                     <td>{entry.description}</td>
@@ -154,7 +168,7 @@ class TableAndForm extends Component {
                     <td>{entry.hours}</td>
                     <td>
                       {entry.rate * entry.hours}
-                      <button onClick={this.deleteTask}>X</button>
+                      <button onClick={()=>this.deleteTask(index)}>X</button>
                     </td>
                   </tr>
                 );
@@ -197,11 +211,7 @@ class TableAndForm extends Component {
         </fieldset>
 
         <br />
-        <button
-          className="showForm"
-          id="showForm"
-          onClick={this.openTaskForm}
-        >
+        <button className="showForm" id="showForm" onClick={this.openTaskForm}>
           Add new task
         </button>
         <br />
@@ -216,7 +226,8 @@ class TableAndForm extends Component {
                 <input
                   type="text"
                   className="title"
-                  value={this.state.title}
+                  name="title"
+                  value={this.state.formValues.title}
                   onChange={this.handleChange}
                 />
                 <p className="error"></p>
@@ -225,7 +236,8 @@ class TableAndForm extends Component {
                 <input
                   type="text"
                   className="description"
-                  value={this.state.description}
+                  name="description"
+                  value={this.state.formValues.description}
                   onChange={this.handleChange}
                 />
                 <p className="error"></p>
@@ -234,7 +246,8 @@ class TableAndForm extends Component {
                 <input
                   type="number"
                   className="rate"
-                  value={this.state.rate}
+                  name="rate"
+                  value={this.state.formValues.rate}
                   onChange={this.handleChange}
                 />
                 <p className="error"></p>
@@ -243,16 +256,21 @@ class TableAndForm extends Component {
                 <input
                   type="number"
                   className="hours"
-                  value={this.state.hours}
+                  name="hours"
+                  value={this.state.formValues.hours}
                   onChange={this.handleChange}
                 />
                 <p className="error"></p>
                 <br />
                 <br />
-                <button type="submit" className="btn">
+                <button type="submit" className="btn" onClick={this.handleSubmit}>
                   Add
                 </button>
-                <button type="submit" className="closeBtn" onClick={this.closeTaskForm}>
+                <button
+                  type="submit"
+                  className="closeBtn"
+                  onClick={this.closeTaskForm}
+                >
                   Close
                 </button>
               </fieldset>
