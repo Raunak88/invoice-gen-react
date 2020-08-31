@@ -5,7 +5,7 @@ const initialState = {
   entries: [
     {
       title: "Microsoft",
-      description: "microsoft suit installation",
+      description: "microsoft suite installation",
       rate: "2",
       hours: "120",
     },
@@ -22,7 +22,7 @@ const initialState = {
     rate: "",
     hours: "",
   },
-  privileged: false,
+  previlegeDiscount: 2,
   currency: "INR",
   taskFormOpen: false,
 };
@@ -62,7 +62,7 @@ class TableAndForm extends Component {
   }
   checkHandler = () => {
     this.setState((prevState) => {
-      return { privileged: !prevState.privileged };
+      return { previlegeDiscount: prevState.previlegeDiscount===2?7:2};
     });
   };
 
@@ -98,12 +98,11 @@ class TableAndForm extends Component {
     var subTotal = entries.reduce((acc, current) => {
       return acc + current.hours * current.rate;
     }, 0);
-    let discount = this.state.privileged ? 7 : 2;
     let taxes = 18;
     let deposit = 400;
     let total = Math.round(
       subTotal -
-        (discount / 100) * subTotal +
+        (this.state.previlegeDiscount / 100) * subTotal +
         (taxes / 100) * subTotal -
         deposit
     );
@@ -138,9 +137,9 @@ class TableAndForm extends Component {
           <label htmlFor="currency">Currency:</label>
           <select id="currency" onChange={this.selectHandler}>
             {/* write the options required. On selecting an option it should display where ever it's required */}
-            <option value="(INR)">INDIA(INR)</option>
-            <option value="(USD)">USA(USD)</option>
-            <option value="(EURO)">EUPROPE(EURO)</option>
+            <option value="INR">INDIA(INR)</option>
+            <option value="USD">USA(USD)</option>
+            <option value="EURO">EUPROPE(EURO)</option>
           </select>
         </div>
         <hr />
@@ -154,21 +153,21 @@ class TableAndForm extends Component {
               <th>Task</th>
               <th>Hours</th>
               <th>Rate</th>
-              <th>Amount</th>
+              <th>Amount({this.state.currency})</th>
               </tr>
             </thead>
             <tbody>
               {entries.map((entry, index) => {
                 return (
-                  <tr key={index}>
+                  <tr className="mainTable" key={index}>
                     <td>{index + 1}</td>
                     <td>{entry.title}</td>
                     <td>{entry.description}</td>
-                    <td>{entry.rate}</td>
                     <td>{entry.hours}</td>
+                    <td>{entry.rate}</td>
                     <td>
                       {entry.rate * entry.hours}
-                      <button onClick={()=>this.deleteTask(index)}>X</button>
+                      <button className="removeEntry" onClick={()=>this.deleteTask(index)}>X</button>
                     </td>
                   </tr>
                 );
@@ -179,31 +178,31 @@ class TableAndForm extends Component {
           <table className="tableValues">
             <tbody>
               <tr className="subTable1">
-                <td className="subTableLeft">Subtotal</td>
+                <td className="subTableLeft">Subtotal({this.state.currency}):</td>
                 <td className="subTableRight">{subTotal}</td>
               </tr>
             </tbody>
             <tbody>
               <tr className="subTable2">
-                <td className="subTableLeft">Discount</td>
-                <td className="subTableRight">{discount}</td>
+                <td className="subTableLeft">Discount%:</td>
+                <td className="subTableRight">{this.state.previlegeDiscount}</td>
               </tr>
             </tbody>
             <tbody>
               <tr className="subTable3">
-                <td className="subTableLeft">Taxes%</td>
+                <td className="subTableLeft">Taxes%:</td>
                 <td className="subTableRight">{taxes}</td>
               </tr>
             </tbody>
             <tbody>
               <tr className="subTable4">
-                <td className="subTableLeft">Deposit {this.state.currency}</td>
+                <td className="subTableLeft">Deposit({this.state.currency}):</td>
                 <td className="subTableRight">{deposit}</td>
               </tr>
             </tbody>
             <tbody>
               <tr className="subTable5">
-                <td className="subTableLeft">Total {this.state.currency}</td>
+                <td className="subTableLeft">Total({this.state.currency}):</td>
                 <td className="subTableRight">{total}</td>
               </tr>
             </tbody>
